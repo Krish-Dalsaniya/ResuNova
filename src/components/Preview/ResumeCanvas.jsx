@@ -141,12 +141,13 @@ const ResumeCanvas = forwardRef(function ResumeCanvas(
         {/* Auto Page-Break Adjustment Toggle */}
         <button 
           type="button" 
-          className={`canvas-btn canvas-toggle-btn ${autoPageBreak ? 'is-active' : ''}`}
+          className={`page-break-toggle-pill ${autoPageBreak ? 'is-active' : ''}`}
           onClick={() => setAutoPageBreak(prev => !prev)}
           title="Automatically shift sections and cards so they never get sliced across page breaks"
         >
-          <Scissors size={14} />
-          <span>{autoPageBreak ? "Auto-Break: ON" : "Auto-Break: OFF"}</span>
+          <span className="toggle-indicator-dot" />
+          <Scissors size={13} />
+          <span>Auto-Break: {autoPageBreak ? "ON" : "OFF"}</span>
         </button>
 
         <div className="paper-format-badge">

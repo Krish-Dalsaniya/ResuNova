@@ -1012,11 +1012,15 @@ body {
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-subtle);
   border-radius: 9999px;
-  padding: 5px 12px;
+  height: 36px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
   font-size: 0.74rem;
   font-weight: 600;
   color: var(--text-muted);
   box-shadow: var(--shadow-md);
+  white-space: nowrap;
 }
 
 .paper-viewport {
@@ -1128,11 +1132,60 @@ body {
   text-transform: uppercase;
 }
 
-.canvas-toggle-btn.is-active {
-  background: rgba(37, 99, 235, 0.15) !important;
-  color: #2563eb !important;
-  border-color: rgba(37, 99, 235, 0.4) !important;
+.page-break-toggle-pill {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--toolbar-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  padding: 0 14px;
+  font-size: 0.74rem;
   font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  user-select: none;
+  width: auto !important;
+  outline: none;
+}
+
+.page-break-toggle-pill:hover {
+  border-color: var(--primary);
+  color: var(--text-main);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.page-break-toggle-pill.is-active {
+  background: rgba(37, 99, 235, 0.1) !important;
+  border-color: rgba(37, 99, 235, 0.4) !important;
+  color: #2563eb !important;
+}
+
+[data-theme="dark"] .page-break-toggle-pill.is-active {
+  background: rgba(59, 130, 246, 0.18) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  color: #60a5fa !important;
+}
+
+.toggle-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.page-break-toggle-pill.is-active .toggle-indicator-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
 }
 
 /* ---------------- Template 1: Modern Executive ---------------- */
