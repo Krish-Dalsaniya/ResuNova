@@ -147,7 +147,7 @@ export default function PersonalInfoForm({ data, onChange }) {
 
       {/* Grid Inputs */}
       <div className="form-grid">
-        <div className="form-group col-span-2">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">Full Name</label>
           <div className="input-with-icon">
             <User size={15} className="input-icon" />
@@ -161,7 +161,7 @@ export default function PersonalInfoForm({ data, onChange }) {
           </div>
         </div>
 
-        <div className="form-group col-span-2">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">Professional Job Title</label>
           <input 
             type="text" 
@@ -172,7 +172,7 @@ export default function PersonalInfoForm({ data, onChange }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">Email Address</label>
           <div className="input-with-icon">
             <Mail size={15} className="input-icon" />
@@ -214,7 +214,7 @@ export default function PersonalInfoForm({ data, onChange }) {
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">Portfolio Website</label>
           <div className="input-with-icon">
             <Globe size={15} className="input-icon" />
@@ -228,7 +228,7 @@ export default function PersonalInfoForm({ data, onChange }) {
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">LinkedIn Profile</label>
           <div className="input-with-icon">
             <LinkedinIcon size={15} className="input-icon" />
@@ -242,7 +242,7 @@ export default function PersonalInfoForm({ data, onChange }) {
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
           <label className="input-label">GitHub / Portfolio</label>
           <div className="input-with-icon">
             <GithubIcon size={15} className="input-icon" />

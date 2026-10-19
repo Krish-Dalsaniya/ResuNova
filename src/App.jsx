@@ -6,10 +6,14 @@ import Navbar from './components/Navbar';
 import FormEditor from './components/Editor/FormEditor';
 import ResumeCanvas from './components/Preview/ResumeCanvas';
 import TemplateModal from './components/TemplateModal';
+import ResumeOptimizerModal from './components/ResumeOptimizerModal';
+import CoverLetterEditor from './components/Editor/CoverLetterEditor';
+import CoverLetterCanvas from './components/Preview/CoverLetterCanvas';
 
 import { 
   initialResumeData, 
   emptyResumeData, 
+  initialCoverLetterData,
   colorThemes, 
   fontFamilies, 
   templates 
@@ -17,8 +21,12 @@ import {
 
 import { adjustPageBreaks } from './utils/pageBreakAdjuster';
 import { showAlert, showConfirm, showSwalToast } from './utils/alert';
+import { calculateAtsScore } from './utils/atsScorer';
 
 export default function App() {
+  const [activeDoc, setActiveDoc] = useState('resume'); // 'resume' | 'coverLetter'
+  const [isOptimizerOpen, setIsOptimizerOpen] = useState(false);
+
   // Load initial data from localStorage if available
   const [resumeData, setResumeData] = useState(() => {
     try {
@@ -30,10 +38,39 @@ export default function App() {
     return initialResumeData;
   });
 
+  // Load cover letter data from localStorage if available
+  const [coverLetterData, setCoverLetterData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('resunova_cover_letter_data');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error("Failed to load saved cover letter", e);
+    }
+    return initialCoverLetterData;
+  });
+
   const [selectedTemplate, setSelectedTemplate] = useState('executive');
   const [selectedTheme, setSelectedTheme] = useState(colorThemes[0]);
   const [selectedFont, setSelectedFont] = useState(fontFamilies[0]);
   const [spacing, setSpacing] = useState('balanced');
+  const [fontSize, setFontSize] = useState(() => {
+    try {
+      const saved = localStorage.getItem('resunova_font_size');
+      if (saved) return saved;
+    } catch (e) {
+      console.error("Failed to load font size", e);
+    }
+    return 'regular';
+  });
+  const [headerStyle, setHeaderStyle] = useState(() => {
+    try {
+      const saved = localStorage.getItem('resunova_header_style');
+      if (saved) return saved;
+    } catch (e) {
+      console.error("Failed to load header style", e);
+    }
+    return 'underline';
+  });
   const [zoom, setZoom] = useState(0.85);
 
   // App UI theme (dark or light studio)
@@ -51,8 +88,18 @@ export default function App() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [toast, setToast] = useState(null);
 
-  // Resume element ref for PDF generation
+  // Document element refs for PDF generation & native print
   const resumePrintRef = useRef(null);
+  const coverLetterPrintRef = useRef(null);
+
+  // Auto-save cover letter to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('resunova_cover_letter_data', JSON.stringify(coverLetterData));
+    } catch (e) {
+      console.error("Failed to save cover letter to localStorage", e);
+    }
+  }, [coverLetterData]);
 
   // Sync appTheme with document element and localStorage
   useEffect(() => {
@@ -78,6 +125,24 @@ export default function App() {
       console.error("Failed to save to localStorage", e);
     }
   }, [resumeData]);
+
+  // Auto-save font size to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('resunova_font_size', fontSize);
+    } catch (e) {
+      console.error("Failed to save font size to localStorage", e);
+    }
+  }, [fontSize]);
+
+  // Auto-save header style to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('resunova_header_style', headerStyle);
+    } catch (e) {
+      console.error("Failed to save header style to localStorage", e);
+    }
+  }, [headerStyle]);
 
   const showToast = (message, type = 'info') => {
     setToast({ message, type });
@@ -138,21 +203,93 @@ export default function App() {
   };
 
   const handlePrint = () => {
+    if (activeDoc === 'coverLetter') {
+      window.print();
+      return;
+    }
     const element = resumePrintRef.current || document.getElementById('resume-to-print');
     if (element) {
       adjustPageBreaks(element, true);
     }
-    window.print();
+    setTimeout(() => {
+      window.print();
+    }, 50);
   };
 
   const handleDownloadPDF = async () => {
-    const element = resumePrintRef.current || document.getElementById('resume-to-print');
-    if (!element) return;
-
     setIsGeneratingPDF(true);
-    showToast("Generating multi-page PDF...", "info");
+    const prevZoom = zoom;
 
     try {
+      if (activeDoc === 'coverLetter') {
+        const element = coverLetterPrintRef.current || document.getElementById('cover-letter-to-print');
+        if (!element) return;
+
+        showToast("Generating 1-page Cover Letter PDF...", "info");
+
+        // Temporarily reset zoom to 1:1 for pixel-perfect unscaled vector-sharp capture
+        setZoom(1);
+        await new Promise(r => setTimeout(r, 80));
+
+        const fullHeight = 1123;
+        const fullWidth = 794;
+
+        const canvas = await html2canvas(element, {
+          scale: 2, // 2x DPI for crisp 300 DPI high-resolution export
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          width: fullWidth,
+          height: fullHeight,
+          windowWidth: fullWidth,
+          windowHeight: fullHeight,
+          x: 0,
+          y: 0,
+          scrollX: 0,
+          scrollY: 0,
+          onclone: (clonedDoc) => {
+            const clonedEl = clonedDoc.getElementById('cover-letter-to-print');
+            if (clonedEl) {
+              clonedEl.style.transform = 'none';
+              clonedEl.style.boxShadow = 'none';
+              clonedEl.style.margin = '0';
+              const parentScale = clonedEl.closest('.paper-scale-container');
+              if (parentScale) {
+                parentScale.style.transform = 'none';
+                parentScale.style.position = 'static';
+                parentScale.style.width = '794px';
+                parentScale.style.height = 'auto';
+              }
+            }
+            clonedDoc.querySelectorAll('.canvas-toolbar, .paper-format-badge, .zoom-controls, .app-navbar-container, .app-navbar, .studio-editor-panel').forEach(el => el.remove());
+          }
+        });
+
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+        const fileName = `${(resumeData.personalInfo?.fullName || 'Cover_Letter').replace(/\s+/g, '_')}_Cover_Letter.pdf`;
+        pdf.save(fileName);
+        showToast("Downloaded Cover Letter PDF!", "success");
+        return;
+      }
+
+      const element = resumePrintRef.current || document.getElementById('resume-to-print');
+      if (!element) return;
+
+      showToast("Generating multi-page PDF...", "info");
+
+      // Temporarily reset zoom to 1:1 for pixel-perfect unscaled vector-sharp capture
+      setZoom(1);
+      await new Promise(r => setTimeout(r, 80));
+
       // Ensure element has auto-adjusted page breaks
       adjustPageBreaks(element, true);
 
@@ -201,7 +338,7 @@ export default function App() {
             }
 
             // Remove visual page break dashed indicators and any studio controls from exported PDF
-            clonedDoc.querySelectorAll('.page-break-indicator, .canvas-toolbar, .paper-format-badge, .zoom-controls, .app-navbar, .studio-editor-panel').forEach(el => el.remove());
+            clonedDoc.querySelectorAll('.page-break-indicator, .canvas-toolbar, .paper-format-badge, .zoom-controls, .app-navbar-container, .app-navbar, .studio-editor-panel').forEach(el => el.remove());
           }
         }
       });
@@ -256,9 +393,13 @@ export default function App() {
       console.error("PDF generation failed:", error);
       showToast("PDF generation error. You can also click Print to Save as PDF.", "error");
     } finally {
+      setZoom(prevZoom);
       setIsGeneratingPDF(false);
     }
   };
+
+  // Live ATS Score & Optimizer analysis
+  const atsAnalysis = calculateAtsScore(resumeData);
 
   return (
     <div className="resunova-app">
@@ -272,6 +413,10 @@ export default function App() {
         onSelectFont={setSelectedFont}
         spacing={spacing}
         onSelectSpacing={setSpacing}
+        selectedFontSize={fontSize}
+        onSelectFontSize={setFontSize}
+        selectedHeaderStyle={headerStyle}
+        onSelectHeaderStyle={setHeaderStyle}
         onLoadSample={handleLoadSample}
         onResetData={handleResetData}
         onExportJSON={handleExportJSON}
@@ -281,30 +426,62 @@ export default function App() {
         isGeneratingPDF={isGeneratingPDF}
         appTheme={appTheme}
         onToggleAppTheme={toggleAppTheme}
+        atsAnalysis={atsAnalysis}
+        onOpenOptimizer={() => setIsOptimizerOpen(true)}
+        activeDoc={activeDoc}
+        onSelectActiveDoc={setActiveDoc}
       />
 
       {/* Main Studio Body: Left Editor + Right Canvas */}
       <main className="studio-workspace">
-        {/* Left Side: Form Editor */}
+        {/* Left Side: Form Editor or Cover Letter Editor */}
         <section className="studio-editor-panel">
-          <FormEditor 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-          />
+          {activeDoc === 'coverLetter' ? (
+            <CoverLetterEditor 
+              coverLetterData={coverLetterData}
+              setCoverLetterData={setCoverLetterData}
+              resumePersonalInfo={resumeData.personalInfo}
+            />
+          ) : (
+            <FormEditor 
+              resumeData={resumeData} 
+              setResumeData={setResumeData} 
+              atsAnalysis={atsAnalysis}
+              onOpenOptimizer={() => setIsOptimizerOpen(true)}
+            />
+          )}
         </section>
 
-        {/* Right Side: Live Resume Preview */}
+        {/* Right Side: Live Resume or Cover Letter Preview */}
         <section className="studio-preview-panel">
-          <ResumeCanvas 
-            ref={resumePrintRef}
-            data={resumeData}
-            templateId={selectedTemplate}
-            theme={selectedTheme}
-            font={selectedFont}
-            spacing={spacing}
-            zoom={zoom}
-            setZoom={setZoom}
-          />
+          {activeDoc === 'coverLetter' ? (
+            <CoverLetterCanvas 
+              ref={coverLetterPrintRef}
+              resumeData={resumeData}
+              coverLetterData={coverLetterData}
+              templateId={selectedTemplate}
+              theme={selectedTheme}
+              font={selectedFont}
+              spacing={spacing}
+              fontSize={fontSize}
+              headerStyle={headerStyle}
+              zoom={zoom}
+              setZoom={setZoom}
+            />
+          ) : (
+            <ResumeCanvas 
+              ref={resumePrintRef}
+              data={resumeData}
+              templateId={selectedTemplate}
+              theme={selectedTheme}
+              font={selectedFont}
+              spacing={spacing}
+              fontSize={fontSize}
+              headerStyle={headerStyle}
+              zoom={zoom}
+              setZoom={setZoom}
+            />
+          )}
         </section>
       </main>
 
@@ -314,6 +491,13 @@ export default function App() {
         onClose={() => setIsTemplateModalOpen(false)}
         selectedTemplate={selectedTemplate}
         onSelectTemplate={setSelectedTemplate}
+      />
+
+      {/* NovoResume-Style Live Resume Optimizer & ATS Modal */}
+      <ResumeOptimizerModal 
+        isOpen={isOptimizerOpen}
+        onClose={() => setIsOptimizerOpen(false)}
+        resumeData={resumeData}
       />
 
       {/* Toast Notification */}

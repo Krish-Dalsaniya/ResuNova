@@ -145,7 +145,45 @@ export const initialResumeData = {
     { id: "lang-2", name: "Spanish", level: "Professional Working" },
     { id: "lang-3", name: "German", level: "Elementary" }
   ],
+  sectionOrder: [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+    "languages"
+  ],
+  sectionSettings: {
+    summary: { visible: true, title: "Professional Summary" },
+    experience: { visible: true, title: "Work Experience" },
+    projects: { visible: true, title: "Key Projects" },
+    skills: { visible: true, title: "Skills & Proficiencies" },
+    education: { visible: true, title: "Education" },
+    certifications: { visible: true, title: "Certifications" },
+    languages: { visible: true, title: "Languages" }
+  },
   customSections: []
+};
+
+export const defaultSectionOrder = [
+  "summary",
+  "experience",
+  "projects",
+  "skills",
+  "education",
+  "certifications",
+  "languages"
+];
+
+export const defaultSectionSettings = {
+  summary: { visible: true, title: "Professional Summary" },
+  experience: { visible: true, title: "Work Experience" },
+  projects: { visible: true, title: "Key Projects" },
+  skills: { visible: true, title: "Skills & Proficiencies" },
+  education: { visible: true, title: "Education" },
+  certifications: { visible: true, title: "Certifications" },
+  languages: { visible: true, title: "Languages" }
 };
 
 export const emptyResumeData = {
@@ -168,6 +206,24 @@ export const emptyResumeData = {
   projects: [],
   certifications: [],
   languages: [],
+  sectionOrder: [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+    "languages"
+  ],
+  sectionSettings: {
+    summary: { visible: true, title: "Professional Summary" },
+    experience: { visible: true, title: "Work Experience" },
+    projects: { visible: true, title: "Key Projects" },
+    skills: { visible: true, title: "Skills & Proficiencies" },
+    education: { visible: true, title: "Education" },
+    certifications: { visible: true, title: "Certifications" },
+    languages: { visible: true, title: "Languages" }
+  },
   customSections: []
 };
 
@@ -188,6 +244,19 @@ export const fontFamilies = [
   { id: "outfit", name: "Outfit (Geometric)", font: "'Outfit', sans-serif" },
   { id: "merriweather", name: "Merriweather (Serif)", font: "'Merriweather', serif" },
   { id: "roboto-slab", name: "Roboto Slab (Editorial)", font: "'Roboto Slab', serif" }
+];
+
+export const fontSizes = [
+  { id: "compact", name: "Compact (9pt)", label: "9pt", scale: 0.90, desc: "High density for 1-page resumes" },
+  { id: "regular", name: "Regular (10pt)", label: "10pt", scale: 1.0, desc: "Balanced standard reading size" },
+  { id: "large", name: "Large (11pt)", label: "11pt", scale: 1.10, desc: "Spacious text for short career history" }
+];
+
+export const headerStyles = [
+  { id: "underline", name: "Modern Underline", icon: "━", desc: "Solid colored rule beneath titles" },
+  { id: "left-bar", name: "Left Accent Bar", icon: "▎", desc: "Vertical colored bar on the left" },
+  { id: "badge", name: "Subtle Badge", icon: "🏷️", desc: "Soft background highlight badge" },
+  { id: "minimal", name: "Pure Typography", icon: "Aa", desc: "Clean minimalist typography" }
 ];
 
 export const templates = [
@@ -248,3 +317,132 @@ export const templates = [
     thumbnail: "graduate"
   }
 ];
+
+export const initialCoverLetterData = {
+  recipient: {
+    hiringManager: "Sarah Jenkins",
+    roleTitle: "Director of Engineering",
+    company: "CloudScale Technologies",
+    address: "100 Market Street, Suite 400",
+    cityStateZip: "San Francisco, CA 94105",
+    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  },
+  letter: {
+    salutation: "Dear Ms. Jenkins,",
+    subject: "Application for Senior Full-Stack Software Engineer",
+    intro: "I am writing to express my enthusiastic interest in the Senior Full-Stack Software Engineer position at CloudScale Technologies. With over 7 years of experience architecting distributed cloud systems, scaling microservices for 2M+ users, and leading collaborative agile squads, I am confident in my ability to make an immediate impact on your platform engineering goals.",
+    body1: "Throughout my career, I have focused on delivering reliable, high-throughput applications that bridge business objectives with technical excellence. At Nexus Digital Labs, I engineered real-time collaborative interfaces using WebSockets and CRDTs with 99.98% synchronization consistency, while designing a shared UI component system that accelerated feature delivery by 25%. Earlier at Vanguard Systems, I automated payment processing pipelines handling $12M+ monthly transaction volume.",
+    body2: "What excites me most about CloudScale Technologies is your commitment to pushing the boundaries of real-time developer tooling and scalable cloud infrastructure. I thrive in environments where engineering teams take ownership of end-to-end quality, and I look forward to bringing my background in GraphQL federation, TypeScript microservices, and performance optimization to your upcoming platform roadmap.",
+    conclusion: "Thank you for your time and consideration. I would welcome the opportunity to discuss how my technical leadership and background align with CloudScale Technologies' vision.",
+    signOff: "Sincerely,",
+    signatureName: "Alex Morgan"
+  }
+};
+
+export const coverLetterPresets = [
+  {
+    id: "tech",
+    name: "Software & Technology",
+    icon: "💻",
+    description: "Tailored for Software Engineers, Full-Stack Developers, and Tech Leads.",
+    data: {
+      recipient: {
+        hiringManager: "Sarah Jenkins",
+        roleTitle: "Director of Engineering",
+        company: "CloudScale Technologies",
+        address: "100 Market Street, Suite 400",
+        cityStateZip: "San Francisco, CA 94105",
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      },
+      letter: {
+        salutation: "Dear Ms. Jenkins,",
+        subject: "Application for Senior Full-Stack Software Engineer",
+        intro: "I am writing to express my enthusiastic interest in the Senior Full-Stack Software Engineer position at CloudScale Technologies. With over 7 years of experience architecting distributed cloud systems, scaling microservices for 2M+ users, and leading collaborative agile squads, I am confident in my ability to make an immediate impact on your platform engineering goals.",
+        body1: "Throughout my career, I have focused on delivering reliable, high-throughput applications that bridge business objectives with technical excellence. At Nexus Digital Labs, I engineered real-time collaborative interfaces using WebSockets and CRDTs with 99.98% synchronization consistency, while designing a shared UI component system that accelerated feature delivery by 25%. Earlier at Vanguard Systems, I automated payment processing pipelines handling $12M+ monthly transaction volume.",
+        body2: "What excites me most about CloudScale Technologies is your commitment to pushing the boundaries of real-time developer tooling and scalable cloud infrastructure. I thrive in environments where engineering teams take ownership of end-to-end quality, and I look forward to bringing my background in GraphQL federation, TypeScript microservices, and performance optimization to your upcoming platform roadmap.",
+        conclusion: "Thank you for your time and consideration. I would welcome the opportunity to discuss how my technical leadership and background align with CloudScale Technologies' vision.",
+        signOff: "Sincerely,",
+        signatureName: "Alex Morgan"
+      }
+    }
+  },
+  {
+    id: "product",
+    name: "Product & Leadership",
+    icon: "🎯",
+    description: "Strategic narrative for Product Managers, Operations, and Team Leads.",
+    data: {
+      recipient: {
+        hiringManager: "David Miller",
+        roleTitle: "VP of Product",
+        company: "Apex Innovations Group",
+        address: "500 Howard Street",
+        cityStateZip: "San Francisco, CA 94105",
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      },
+      letter: {
+        salutation: "Dear Mr. Miller,",
+        subject: "Application for Senior Technical Product Manager",
+        intro: "I am excited to submit my application for the Senior Technical Product Manager role at Apex Innovations Group. Having guided complex SaaS products from early customer discovery through multi-million dollar annual recurring revenue, I am eager to help scale your next generation of enterprise offerings.",
+        body1: "In my previous positions, I have built a track record of translating complex technical constraints into clear product roadmaps that delight end-users. By establishing metric-driven sprint prioritization and working closely with engineering, UX, and sales leaders, I led initiatives that increased user engagement by 42% and reduced customer churn by 18% over four consecutive quarters.",
+        body2: "Apex Innovations' customer-first philosophy and rapid product cadence strongly resonate with my operational values. I bring a combination of technical depth, rigorous hypothesis testing, and cross-functional leadership that ensures products are built efficiently and delivered on time.",
+        conclusion: "I would appreciate the chance to discuss how my product strategy and operational rigor can contribute to Apex Innovations' growth targets.",
+        signOff: "Best regards,",
+        signatureName: "Alex Morgan"
+      }
+    }
+  },
+  {
+    id: "graduate",
+    name: "Entry-Level & Graduate",
+    icon: "🎓",
+    description: "Designed for recent graduates and career changers showcasing potential.",
+    data: {
+      recipient: {
+        hiringManager: "University Recruiting Team",
+        roleTitle: "Campus & Early Career Programs",
+        company: "Pinnacle Software Labs",
+        address: "250 University Avenue",
+        cityStateZip: "Palo Alto, CA 94301",
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      },
+      letter: {
+        salutation: "Dear Hiring Team,",
+        subject: "Application for Associate Software Engineer — Early Career",
+        intro: "As a recent Computer Science graduate with a strong academic foundation in algorithms, systems programming, and full-stack web development, I am eager to begin my professional career as an Associate Software Engineer at Pinnacle Software Labs.",
+        body1: "During my academic tenure, I served as lead developer on an open-source collaborative project that earned departmental honors and was adopted by over 1,500 active campus users. My internship experience gave me hands-on practice collaborating in agile sprints, writing unit and integration tests, and optimizing database queries in production-like environments.",
+        body2: "I have closely followed Pinnacle Software Labs' recent engineering blog posts on modern web performance and developer tooling. Your dedication to engineering mentorship and continuous learning represents the ideal environment for me to contribute meaningful code while learning from seasoned domain experts.",
+        conclusion: "Thank you for reviewing my application. I would be thrilled to speak with your team about how my foundational training, passion for clean code, and rapid learning ability can benefit your team.",
+        signOff: "Sincerely,",
+        signatureName: "Alex Morgan"
+      }
+    }
+  },
+  {
+    id: "creative",
+    name: "Design & Creative",
+    icon: "🎨",
+    description: "Compelling storytelling for UI/UX Designers, Creatives, and Brand Strategists.",
+    data: {
+      recipient: {
+        hiringManager: "Elena Rostova",
+        roleTitle: "Creative Director",
+        company: "Studio Vanguard Design",
+        address: "742 Evergreen Terrace",
+        cityStateZip: "New York, NY 10012",
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      },
+      letter: {
+        salutation: "Dear Ms. Rostova,",
+        subject: "Application for Senior UI/UX & Product Designer",
+        intro: "I am writing to express my enthusiasm for the Senior UI/UX & Product Designer opening at Studio Vanguard Design. With a passion for human-centered design systems, micro-interactions, and accessible digital products, I would love to bring my design craft to your award-winning team.",
+        body1: "Over the past 6 years, I have spearheaded end-to-end design overhauls for cross-platform applications, working closely with engineering partners to ensure design fidelity from Figma prototypes to production release. My design systems have decreased front-end design debt by 30% while creating cohesive visual identities across responsive web and mobile touchpoints.",
+        body2: "Studio Vanguard's reputation for pairing elegant aesthetics with thoughtful interaction design inspires my creative approach. I thrive at the intersection of aesthetic refinement and user research, ensuring every pixel serves a purposeful functional outcome.",
+        conclusion: "I welcome the opportunity to walk you through my portfolio and discuss how my design vision aligns with your upcoming client projects.",
+        signOff: "Warm regards,",
+        signatureName: "Alex Morgan"
+      }
+    }
+  }
+];
+

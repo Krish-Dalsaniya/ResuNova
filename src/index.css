@@ -132,32 +132,48 @@ body {
   background-color: var(--bg-app);
 }
 
-/* ---------------- Top Navigation Bar ---------------- */
-.app-navbar {
-  height: 64px;
+/* ---------------- Top Navigation Bar (2-Tier Executive Layout) ---------------- */
+.app-navbar-container {
+  display: flex;
+  flex-direction: column;
   background: var(--navbar-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 100;
+  overflow: visible !important;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Tier 1: Main Header */
+.navbar-top-row {
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  z-index: 40;
+  border-bottom: 1px solid var(--border-subtle);
   gap: 16px;
-  flex-shrink: 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.navbar-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .brand-logo-img {
-  height: 36px;
+  height: 34px;
   width: auto;
-  max-width: 175px;
+  max-width: 160px;
   object-fit: contain;
   transition: opacity 0.2s ease, transform 0.2s ease;
   user-select: none;
@@ -168,35 +184,156 @@ body {
 }
 
 .brand-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.62rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #3b82f6;
-  background: rgba(59, 130, 246, 0.12);
-  padding: 3px 7px;
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
-/* Toolbar Controls */
-.navbar-toolbar {
+/* Document Mode Switcher */
+.doc-mode-toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
+  background: var(--tool-btn-bg);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  gap: 2px;
 }
 
-.tool-btn {
+.doc-mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.doc-mode-btn:hover {
+  color: var(--text-main);
+}
+
+.doc-mode-btn.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+}
+
+.doc-mode-badge {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Center status */
+.navbar-center-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--tool-btn-bg);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+}
+
+.text-emerald {
+  color: #10b981;
+}
+
+/* Right Actions */
+.navbar-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Hero Download Button */
+.btn-download-hero {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  padding: 7px 16px !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35) !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.btn-download-hero:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
+  filter: brightness(1.06);
+}
+
+.btn-download-hero:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* Tier 2: Customization Sub-Row */
+.navbar-sub-row {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 90;
+  overflow: visible !important;
+}
+
+.sub-row-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  overflow: visible !important;
+}
+
+.tool-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-subtle);
+  margin: 0 4px;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--tool-btn-bg);
   border: 1px solid var(--border-subtle);
   color: var(--text-main);
-  padding: 7px 13px;
-  border-radius: var(--radius-md);
-  font-size: 0.82rem;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
+  user-select: none;
 }
 
 .tool-btn:hover {
@@ -205,13 +342,14 @@ body {
 }
 
 .tool-btn.highlight-btn {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.12));
-  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.3);
+  font-weight: 600;
 }
 
 .tool-label {
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
 }
 
 .tool-value {
@@ -220,29 +358,45 @@ body {
 }
 
 .color-dot-indicator {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Dropdown Divider */
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 6px 0;
+}
+
+.dropdown-item.text-danger {
+  color: #ef4444 !important;
+}
+
+.dropdown-item.text-danger:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
 }
 
 /* Dropdown Menus */
 .dropdown-wrapper {
   position: relative;
+  z-index: 95;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
   min-width: 190px;
   background: var(--dropdown-bg);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   padding: 8px;
-  z-index: 60;
+  z-index: 9999 !important;
   animation: slideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -463,7 +617,7 @@ body {
 /* ---------------- Studio Workspace Layout ---------------- */
 .studio-workspace {
   display: flex;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 100px);
   width: 100vw;
   overflow: hidden;
 }
@@ -607,8 +761,9 @@ body {
   gap: 14px;
 }
 
-.col-span-2 {
-  grid-column: span 2 / span 2;
+.col-span-2,
+.form-group.col-span-2 {
+  grid-column: 1 / -1 !important;
 }
 
 .form-group {
@@ -960,12 +1115,14 @@ body {
 
 .canvas-toolbar {
   position: absolute;
-  top: 16px;
-  right: 24px;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 12px;
-  z-index: 20;
+  justify-content: center;
+  gap: 10px;
+  z-index: 25;
 }
 
 .zoom-controls {
@@ -1269,6 +1426,38 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.skill-pill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 2px;
+  background: #f8fafc;
+}
+
+.skill-pill-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.skill-level-dots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.rating-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .skill-row {
@@ -3482,32 +3671,49 @@ body {
     padding: 0 !important;
   }
 
+  .app-navbar-container,
   .app-navbar,
+  .navbar-top-row,
+  .navbar-sub-row,
   .studio-editor-panel,
   .canvas-toolbar,
+  .canvas-floating-toolbar,
+  .paper-format-badge,
+  .zoom-controls,
   .modal-backdrop,
+  .modal-overlay,
+  .swal2-container,
   .toast-notification,
   .page-break-indicator {
     display: none !important;
   }
 
-  .a4-resume-sheet {
+  .a4-resume-sheet,
+  .cover-letter-sheet {
     box-shadow: none !important;
     border-radius: 0 !important;
-    width: 100% !important;
-    min-height: auto !important;
-    height: auto !important;
-    margin: 0 !important;
+    border: none !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     background: #ffffff !important;
     overflow: visible !important;
-    position: static !important;
+    position: relative !important;
   }
 
   .resume-page {
-    min-height: auto !important;
+    min-height: 297mm !important;
     height: auto !important;
     overflow: visible !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .resume-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 
   /* Prevent awkward page cuts in the middle of a role or card */
@@ -3620,4 +3826,1221 @@ body {
 .resunova-swal-cancel-btn:hover {
   background: var(--border-subtle) !important;
 }
+
+/* ---------------- Section Reordering & Visibility Management ---------------- */
+.manage-sections-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  background: var(--tool-btn-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.manage-sections-trigger-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--bg-card-hover);
+}
+
+.accordion-reorder-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-right: 4px;
+}
+
+.accordion-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.accordion-tool-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.accordion-tool-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.accordion-eye-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-right: 4px;
+}
+
+.accordion-eye-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-subtle);
+}
+
+.accordion-eye-btn.is-muted {
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+
+.accordion-item.is-section-hidden {
+  opacity: 0.75;
+  border-style: dashed;
+}
+
+.hidden-tag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.section-hidden-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: var(--amber);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.add-sec-dashed-btn {
+  border-style: dashed !important;
+  border-width: 2px !important;
+  padding: 12px 18px !important;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.add-sec-dashed-btn:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-1px);
+}
+
+/* Modal sizing */
+.modal-md {
+  max-width: 580px;
+}
+
+.manage-sections-toolbar {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.reorder-sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.reorder-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.reorder-section-row:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: var(--bg-card-hover);
+}
+
+.reorder-section-row.is-hidden {
+  opacity: 0.6;
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.reorder-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reorder-index-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reorder-icon-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reorder-row-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.reorder-row-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.reorder-row-cat {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.reorder-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reorder-step-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--tool-btn-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reorder-step-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.reorder-step-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.visibility-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.visibility-toggle-btn.is-visible {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.visibility-toggle-btn.is-visible:hover {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.visibility-toggle-btn.is-muted {
+  background: var(--tool-btn-bg);
+  color: var(--text-dim);
+  border-color: var(--border-subtle);
+}
+
+.visibility-toggle-btn.is-muted:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.toggle-label-text {
+  font-size: 0.75rem;
+}
+
+.preset-custom-wrap {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+}
+
+.preset-custom-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.preset-pills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-custom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-custom-btn:hover {
+  border-color: var(--primary);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.preset-emoji {
+  font-size: 0.95rem;
+}
+
+/* ---------------- Live Resume Optimizer & ATS Meter ---------------- */
+.ats-score-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ats-score-pill-btn:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.25);
+}
+
+.ats-mini-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--success);
+  box-shadow: 0 0 8px currentColor;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.8; }
+}
+
+.ats-score-pill-val {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.ats-score-pill-lbl {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+/* Modal layout */
+.optimizer-modal-dialog {
+  max-width: 840px !important;
+}
+
+.optimizer-header {
+  padding: 18px 24px;
+}
+
+.optimizer-header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.optimizer-badge-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Hero Banner */
+.optimizer-hero-banner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.gauge-container {
+  position: relative;
+  width: 105px;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gauge-svg {
+  transform: rotate(-90deg);
+}
+
+.gauge-bg {
+  fill: none;
+  stroke: var(--border-subtle);
+}
+
+.gauge-fill {
+  fill: none;
+  transition: stroke-dashoffset 0.8s ease-in-out;
+}
+
+.gauge-center-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-number {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.gauge-unit {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.optimizer-hero-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optimizer-tier-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid currentColor;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.optimizer-hero-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.optimizer-stats-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.stat-pill {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-pill-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stat-pill-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* Tabs Bar */
+.optimizer-tabs-bar {
+  display: flex;
+  gap: 2px;
+  padding: 0 24px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.optimizer-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.optimizer-tab-btn:hover {
+  color: var(--text-main);
+}
+
+.optimizer-tab-btn.is-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.optimizer-body {
+  max-height: 520px;
+  padding: 20px 24px;
+}
+
+/* Checklist cards */
+.checks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  transition: all 0.15s ease;
+}
+
+.check-card:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: var(--bg-card-hover);
+}
+
+.check-card.is-passed {
+  border-left: 3px solid var(--success);
+}
+
+.check-card.is-pending {
+  border-left: 3px solid var(--amber);
+}
+
+.check-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.check-status-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.check-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.check-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.check-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.check-cat-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-card-hover);
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+}
+
+.check-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.check-points-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  background: var(--tool-btn-bg);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+/* Action Verbs Tab */
+.verb-categories-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.verb-cat-btn {
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.verb-cat-btn:hover {
+  color: var(--text-main);
+  border-color: var(--primary);
+}
+
+.verb-cat-btn.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.verbs-pills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.verb-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.verb-pill-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.verb-pill-btn.is-copied {
+  border-color: var(--success);
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
+.verb-copy-icon {
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+.verb-pill-btn:hover .verb-copy-icon {
+  opacity: 1;
+}
+
+/* Weak phrases tab */
+.weak-phrases-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  font-size: 0.8rem;
+  color: var(--amber);
+}
+
+.weak-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weak-phrase-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.weak-phrase-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+}
+
+.weak-label {
+  font-size: 0.68rem;
+  color: var(--danger);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.weak-term {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  text-decoration: line-through;
+  text-decoration-color: var(--danger);
+}
+
+.weak-phrase-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.strong-label {
+  font-size: 0.68rem;
+  color: var(--success);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.strong-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sug-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--success);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sug-pill-btn:hover {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.no-weak-phrases-card {
+  text-align: center;
+  padding: 36px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-weak-phrases-card h3 {
+  font-size: 1.1rem;
+  color: var(--text-main);
+}
+
+.no-weak-phrases-card p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  max-width: 440px;
+  line-height: 1.5;
+}
+
+/* Category breakdown */
+.breakdown-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.breakdown-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.breakdown-row-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.breakdown-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.breakdown-score {
+  color: var(--text-muted);
+}
+
+.breakdown-track {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.breakdown-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------- Matching Cover Letter Builder ---------------- */
+.doc-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 3px;
+}
+
+.doc-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.doc-mode-btn:hover {
+  color: var(--text-main);
+}
+
+.doc-mode-btn.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.doc-mode-badge {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.doc-mode-btn:not(.is-active) .doc-mode-badge {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary);
+}
+
+/* Cover Letter Presets Bar */
+.cover-letter-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.preset-bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.preset-pills-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preset-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: var(--tool-btn-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.preset-pill-btn:hover {
+  border-color: var(--primary);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+/* Cover Letter Print / Canvas Sheet */
+.cover-letter-sheet {
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cover-letter-sheet p {
+  text-align: justify;
+}
+
+/* ==========================================================================
+   NovoResume Feature 4: Section Header Accent Styles
+   ========================================================================== */
+
+/* 1. Modern Underline (Classic Solid Colored Rule) */
+.header-style-underline .section-title,
+.header-style-underline .minimal-section-title,
+.header-style-underline .tech-block-title,
+.header-style-underline .graduate-sec-title,
+.header-style-underline .creative-title,
+.header-style-underline .timeline-sec-title,
+.header-style-underline .classic-sec-title,
+.header-style-underline .sidebar-title,
+.header-style-underline .graduate-side-title {
+  border-bottom: 2px solid var(--theme-primary, #2563eb) !important;
+  border-left: none !important;
+  background: transparent !important;
+  padding-left: 0 !important;
+}
+
+/* 2. Left Accent Bar */
+.header-style-left-bar .section-title,
+.header-style-left-bar .minimal-section-title,
+.header-style-left-bar .tech-block-title,
+.header-style-left-bar .graduate-sec-title,
+.header-style-left-bar .creative-title,
+.header-style-left-bar .timeline-sec-title,
+.header-style-left-bar .classic-sec-title,
+.header-style-left-bar .sidebar-title,
+.header-style-left-bar .graduate-side-title {
+  border-bottom: none !important;
+  border-left: 4px solid var(--theme-primary, #2563eb) !important;
+  padding-left: 8px !important;
+  padding-bottom: 2px !important;
+  background: transparent !important;
+}
+
+/* Hide separate bottom underline elements in left-bar, badge, and minimal modes */
+.header-style-left-bar .minimal-title-underline,
+.header-style-left-bar .elegant-heading-line,
+.header-style-badge .minimal-title-underline,
+.header-style-badge .elegant-heading-line,
+.header-style-minimal .minimal-title-underline,
+.header-style-minimal .elegant-heading-line {
+  display: none !important;
+}
+
+/* 3. Subtle Badge */
+.header-style-badge .section-title,
+.header-style-badge .minimal-section-title,
+.header-style-badge .tech-block-title,
+.header-style-badge .graduate-sec-title,
+.header-style-badge .creative-title,
+.header-style-badge .timeline-sec-title,
+.header-style-badge .classic-sec-title,
+.header-style-badge .sidebar-title,
+.header-style-badge .graduate-side-title {
+  border-bottom: none !important;
+  border-left: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  background: rgba(37, 99, 235, 0.09) !important;
+  color: var(--theme-primary, #2563eb) !important;
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
+  margin-bottom: 6px !important;
+  width: fit-content !important;
+}
+
+/* 4. Pure Typography / Minimal */
+.header-style-minimal .section-title,
+.header-style-minimal .minimal-section-title,
+.header-style-minimal .tech-block-title,
+.header-style-minimal .graduate-sec-title,
+.header-style-minimal .creative-title,
+.header-style-minimal .timeline-sec-title,
+.header-style-minimal .classic-sec-title,
+.header-style-minimal .sidebar-title,
+.header-style-minimal .graduate-side-title {
+  border-bottom: none !important;
+  border-left: none !important;
+  background: transparent !important;
+  padding-left: 0 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+/* ==========================================================================
+   NovoResume Feature 4: Font Size Scaling (Compact 9pt / Regular 10pt / Large 11pt)
+   ========================================================================== */
+
+/* Compact (9pt) - High density to pull trailing lines onto 1 page */
+.font-scale-compact {
+  font-size: 8.8pt !important;
+  line-height: 1.34 !important;
+}
+
+.font-scale-compact p,
+.font-scale-compact li,
+.font-scale-compact .summary-text,
+.font-scale-compact .minimal-summary,
+.font-scale-compact .exp-desc,
+.font-scale-compact .edu-desc,
+.font-scale-compact .proj-desc,
+.font-scale-compact .classic-summary-text,
+.font-scale-compact .classic-desc,
+.font-scale-compact .elegant-summary-body,
+.font-scale-compact .cover-letter-body-content p {
+  font-size: 8.4pt !important;
+  line-height: 1.32 !important;
+}
+
+.font-scale-compact h1,
+.font-scale-compact .resume-name,
+.font-scale-compact .minimal-name,
+.font-scale-compact .creative-name {
+  font-size: 1.7rem !important;
+}
+
+.font-scale-compact h2,
+.font-scale-compact .section-title,
+.font-scale-compact .minimal-section-title,
+.font-scale-compact .tech-block-title,
+.font-scale-compact .graduate-sec-title,
+.font-scale-compact .creative-title,
+.font-scale-compact .timeline-sec-title,
+.font-scale-compact .classic-sec-title,
+.font-scale-compact .sidebar-title,
+.font-scale-compact .graduate-side-title {
+  font-size: 0.85rem !important;
+  margin-bottom: 6px !important;
+}
+
+.font-scale-compact h3,
+.font-scale-compact .exp-role,
+.font-scale-compact .tech-role,
+.font-scale-compact .project-title,
+.font-scale-compact .minimal-entry-role,
+.font-scale-compact .classic-role {
+  font-size: 0.82rem !important;
+}
+
+.font-scale-compact .timeline-list,
+.font-scale-compact .minimal-entries,
+.font-scale-compact .tech-entries,
+.font-scale-compact .classic-exp-item {
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.font-scale-compact ul {
+  gap: 2px !important;
+  margin-top: 3px !important;
+}
+
+.font-scale-compact li {
+  margin-bottom: 1.5px !important;
+}
+
+/* Regular (10pt) - Standard baseline */
+.font-scale-regular {
+  /* Natural template fonts and line heights */
+}
+
+/* Large (11pt) - Spacious reading font */
+.font-scale-large {
+  font-size: 10.8pt !important;
+  line-height: 1.55 !important;
+}
+
+.font-scale-large p,
+.font-scale-large li,
+.font-scale-large .summary-text,
+.font-scale-large .minimal-summary,
+.font-scale-large .exp-desc,
+.font-scale-large .edu-desc,
+.font-scale-large .proj-desc,
+.font-scale-large .classic-summary-text,
+.font-scale-large .classic-desc,
+.font-scale-large .elegant-summary-body,
+.font-scale-large .cover-letter-body-content p {
+  font-size: 10.2pt !important;
+  line-height: 1.55 !important;
+}
+
+.font-scale-large h1,
+.font-scale-large .resume-name,
+.font-scale-large .minimal-name,
+.font-scale-large .creative-name {
+  font-size: 2.2rem !important;
+}
+
+.font-scale-large h2,
+.font-scale-large .section-title,
+.font-scale-large .minimal-section-title,
+.font-scale-large .tech-block-title,
+.font-scale-large .graduate-sec-title,
+.font-scale-large .creative-title,
+.font-scale-large .timeline-sec-title,
+.font-scale-large .classic-sec-title,
+.font-scale-large .sidebar-title,
+.font-scale-large .graduate-side-title {
+  font-size: 1.05rem !important;
+  margin-bottom: 10px !important;
+}
+
+.font-scale-large h3,
+.font-scale-large .exp-role,
+.font-scale-large .tech-role,
+.font-scale-large .project-title,
+.font-scale-large .minimal-entry-role,
+.font-scale-large .classic-role {
+  font-size: 0.98rem !important;
+}
+
+.font-scale-large .timeline-list,
+.font-scale-large .minimal-entries,
+.font-scale-large .tech-entries,
+.font-scale-large .classic-exp-item {
+  gap: 14px !important;
+  margin-bottom: 12px !important;
+}
+
+.font-scale-large ul {
+  gap: 5px !important;
+  margin-top: 5px !important;
+}
+
+.font-scale-large li {
+  margin-bottom: 3.5px !important;
+}
+
+
+
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Globe, ExternalLink } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, ExternalLink, Sparkles } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '../../Icons';
 
 const getTechList = (tech) => {
@@ -24,8 +24,145 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
     skills = [], 
     projects = [], 
     certifications = [], 
-    languages = [] 
+    languages = [],
+    customSections = [],
+    sectionOrder = ['summary', 'experience', 'projects', 'skills', 'education', 'certifications', 'languages'],
+    sectionSettings = {}
   } = data || {};
+
+  const isVisible = (secKey) => sectionSettings[secKey]?.visible !== false;
+
+  const renderMainSection = (key) => {
+    if (!isVisible(key)) return null;
+
+    if (key === 'experience' && experience && experience.length > 0) {
+      return (
+        <section key="experience" className="graduate-sec">
+          <h2 className="graduate-sec-title" style={{ color: theme?.primary, borderLeftColor: theme?.secondary }}>
+            Experience & Leadership
+          </h2>
+          <div className="graduate-entries">
+            {experience.map((exp) => (
+              <div key={exp.id} className="graduate-entry">
+                <div className="graduate-entry-header">
+                  <div>
+                    <strong className="graduate-entry-role">{exp.role}</strong>
+                    <div className="graduate-entry-company" style={{ color: theme?.secondary }}>
+                      {exp.company} {exp.location && <span>• {exp.location}</span>}
+                    </div>
+                  </div>
+                  <span className="graduate-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
+                    {exp.startDate} – {exp.current ? "Present" : exp.endDate}
+                  </span>
+                </div>
+                {exp.description && <p className="graduate-desc">{exp.description}</p>}
+                {exp.highlights && exp.highlights.length > 0 && (
+                  <ul className="graduate-bullets">
+                    {exp.highlights.map((h, i) => (
+                      <li key={i}>{h}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    if (key === 'projects' && projects && projects.length > 0) {
+      return (
+        <section key="projects" className="graduate-sec">
+          <h2 className="graduate-sec-title" style={{ color: theme?.primary, borderLeftColor: theme?.secondary }}>
+            Academic & Portfolio Projects
+          </h2>
+          <div className="graduate-entries">
+            {projects.map((proj) => {
+              const techList = getTechList(proj.technologies);
+              return (
+                <div key={proj.id} className="graduate-entry">
+                  <div className="graduate-entry-header">
+                    <strong className="graduate-entry-role">
+                      {proj.name || proj.title}
+                      {proj.link && (
+                        <a href={proj.link} target="_blank" rel="noreferrer" className="graduate-link" style={{ color: theme?.secondary }}>
+                          <ExternalLink size={12} />
+                        </a>
+                      )}
+                    </strong>
+                  </div>
+                  {proj.role && <div className="graduate-entry-company" style={{ color: theme?.secondary }}>{proj.role}</div>}
+                  {proj.description && <p className="graduate-desc">{proj.description}</p>}
+                  {proj.highlights && proj.highlights.length > 0 && (
+                    <ul className="graduate-bullets">
+                      {proj.highlights.map((h, i) => (
+                        <li key={i}>{h}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {techList.length > 0 && (
+                    <div className="graduate-tech-tags">
+                      {techList.map((t, i) => (
+                        <span key={i} className="graduate-tech-tag" style={{ backgroundColor: theme?.bgSidebar, borderColor: theme?.accent }}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    if (key.startsWith('custom-')) {
+      const customSec = customSections.find(c => c.id === key);
+      if (!customSec || !customSec.items || customSec.items.length === 0) return null;
+
+      return (
+        <section key={customSec.id} className="graduate-sec">
+          <h2 className="graduate-sec-title" style={{ color: theme?.primary, borderLeftColor: theme?.secondary }}>
+            {customSec.title || "Additional Section"}
+          </h2>
+          <div className="graduate-entries">
+            {customSec.items.map((item) => (
+              <div key={item.id} className="graduate-entry">
+                <div className="graduate-entry-header">
+                  <div>
+                    <strong className="graduate-entry-role">{item.title}</strong>
+                    {item.subtitle && (
+                      <div className="graduate-entry-company" style={{ color: theme?.secondary }}>
+                        {item.subtitle}
+                      </div>
+                    )}
+                  </div>
+                  {item.date && (
+                    <span className="graduate-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
+                      {item.date}
+                    </span>
+                  )}
+                </div>
+                {item.description && <p className="graduate-desc">{item.description}</p>}
+                {item.highlights && item.highlights.length > 0 && (
+                  <ul className="graduate-bullets">
+                    {item.highlights.filter(Boolean).map((h, i) => (
+                      <li key={i}>{h}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    return null;
+  };
+
+  const mainKeys = sectionOrder.filter(k => ['experience', 'projects'].includes(k) || k.startsWith('custom-'));
 
   return (
     <div 
@@ -45,7 +182,7 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
           <p className="graduate-title" style={{ color: theme?.secondary }}>
             {personalInfo.jobTitle || "Recent Graduate & Professional"}
           </p>
-          {summary && <p className="graduate-summary-text">{summary}</p>}
+          {isVisible('summary') && summary && <p className="graduate-summary-text">{summary}</p>}
         </div>
 
         {personalInfo.showAvatar && personalInfo.avatar && (
@@ -64,83 +201,10 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
       <div className="graduate-body-grid">
         {/* Left Column: Experience & Projects */}
         <div className="graduate-main-col">
-          {experience && experience.length > 0 && (
-            <section className="graduate-sec">
-              <h2 className="graduate-sec-title" style={{ color: theme?.primary, borderLeftColor: theme?.secondary }}>
-                Experience & Leadership
-              </h2>
-              <div className="graduate-entries">
-                {experience.map((exp) => (
-                  <div key={exp.id} className="graduate-entry">
-                    <div className="graduate-entry-header">
-                      <div>
-                        <strong className="graduate-entry-role">{exp.role}</strong>
-                        <div className="graduate-entry-company" style={{ color: theme?.secondary }}>
-                          {exp.company} {exp.location && <span>• {exp.location}</span>}
-                        </div>
-                      </div>
-                      <span className="graduate-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
-                        {exp.startDate} – {exp.current ? "Present" : exp.endDate}
-                      </span>
-                    </div>
-                    {exp.description && <p className="graduate-desc">{exp.description}</p>}
-                    {exp.highlights && exp.highlights.length > 0 && (
-                      <ul className="graduate-bullets">
-                        {exp.highlights.map((h, i) => (
-                          <li key={i}>{h}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {projects && projects.length > 0 && (
-            <section className="graduate-sec">
-              <h2 className="graduate-sec-title" style={{ color: theme?.primary, borderLeftColor: theme?.secondary }}>
-                Academic & Portfolio Projects
-              </h2>
-              <div className="graduate-entries">
-                {projects.map((proj) => {
-                  const techList = getTechList(proj.technologies);
-                  return (
-                    <div key={proj.id} className="graduate-entry">
-                      <div className="graduate-entry-header">
-                        <strong className="graduate-entry-role">
-                          {proj.name || proj.title}
-                          {proj.link && (
-                            <a href={proj.link} target="_blank" rel="noreferrer" className="graduate-link" style={{ color: theme?.secondary }}>
-                              <ExternalLink size={12} />
-                            </a>
-                          )}
-                        </strong>
-                      </div>
-                      {proj.role && <div className="graduate-entry-company" style={{ color: theme?.secondary }}>{proj.role}</div>}
-                      {proj.description && <p className="graduate-desc">{proj.description}</p>}
-                      {proj.highlights && proj.highlights.length > 0 && (
-                        <ul className="graduate-bullets">
-                          {proj.highlights.map((h, i) => (
-                            <li key={i}>{h}</li>
-                          ))}
-                        </ul>
-                      )}
-                      {techList.length > 0 && (
-                        <div className="graduate-tech-tags">
-                          {techList.map((t, i) => (
-                            <span key={i} className="graduate-tech-tag" style={{ backgroundColor: theme?.bgSidebar, borderColor: theme?.accent }}>
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
+          {mainKeys.map(k => renderMainSection(k))}
+          {customSections
+            .filter(c => !mainKeys.includes(c.id) && isVisible(c.id))
+            .map(c => renderMainSection(c.id))}
         </div>
 
         {/* Right Sidebar: Contact, Education, Skills, Languages, Certs */}
@@ -191,7 +255,7 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
           </div>
 
           {/* Education Highlight */}
-          {education && education.length > 0 && (
+          {isVisible('education') && education && education.length > 0 && (
             <div className="graduate-side-sec">
               <h3 className="graduate-side-title" style={{ color: theme?.primary, borderBottomColor: theme?.secondary }}>
                 Education
@@ -215,7 +279,7 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
           )}
 
           {/* Skills Categorized */}
-          {skills && skills.length > 0 && (
+          {isVisible('skills') && skills && skills.length > 0 && (
             <div className="graduate-side-sec">
               <h3 className="graduate-side-title" style={{ color: theme?.primary, borderBottomColor: theme?.secondary }}>
                 Skills & Tools
@@ -241,7 +305,7 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
           )}
 
           {/* Certifications */}
-          {certifications && certifications.length > 0 && (
+          {isVisible('certifications') && certifications && certifications.length > 0 && (
             <div className="graduate-side-sec">
               <h3 className="graduate-side-title" style={{ color: theme?.primary, borderBottomColor: theme?.secondary }}>
                 Certifications
@@ -258,7 +322,7 @@ export default function GraduateSidebar({ data, theme, font, spacing }) {
           )}
 
           {/* Languages */}
-          {languages && languages.length > 0 && (
+          {isVisible('languages') && languages && languages.length > 0 && (
             <div className="graduate-side-sec">
               <h3 className="graduate-side-title" style={{ color: theme?.primary, borderBottomColor: theme?.secondary }}>
                 Languages

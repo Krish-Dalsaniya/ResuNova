@@ -3,7 +3,159 @@ import { Mail, Phone, MapPin, Globe, ExternalLink } from 'lucide-react';
 import { LinkedinIcon } from '../../Icons';
 
 export default function CreativeAccent({ data, theme, font, spacing }) {
-  const { personalInfo, summary, experience, education, skills, projects, certifications, languages } = data;
+  const { 
+    personalInfo = {}, 
+    summary = "", 
+    experience = [], 
+    education = [], 
+    skills = [], 
+    projects = [], 
+    certifications = [], 
+    languages = [],
+    customSections = [],
+    sectionOrder = ['summary', 'experience', 'projects', 'skills', 'education', 'certifications', 'languages'],
+    sectionSettings = {}
+  } = data || {};
+
+  const isVisible = (secKey) => sectionSettings[secKey]?.visible !== false;
+
+  const renderLeftSection = (key) => {
+    if (!isVisible(key)) return null;
+
+    if (key === 'summary' && summary) {
+      return (
+        <section key="summary" className="creative-section">
+          <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
+            About Me
+          </h2>
+          <p className="summary-text">{summary}</p>
+        </section>
+      );
+    }
+
+    if (key === 'experience' && experience && experience.length > 0) {
+      return (
+        <section key="experience" className="creative-section">
+          <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
+            Work History
+          </h2>
+          <div className="creative-entries">
+            {experience.map((exp) => (
+              <div key={exp.id} className="creative-entry">
+                <div className="creative-entry-head">
+                  <div>
+                    <h3 className="creative-exp-role">{exp.role}</h3>
+                    <div className="creative-exp-company" style={{ color: theme.secondary }}>
+                      {exp.company} {exp.location && `• ${exp.location}`}
+                    </div>
+                  </div>
+                  <span className="creative-badge" style={{ backgroundColor: theme.accent, color: theme.primary }}>
+                    {exp.startDate} – {exp.current ? "Present" : exp.endDate}
+                  </span>
+                </div>
+                {exp.description && <p className="creative-desc">{exp.description}</p>}
+                {exp.highlights && (
+                  <ul className="bullet-list">
+                    {exp.highlights.map((h, i) => (
+                      <li key={i}>
+                        <span className="bullet-point" style={{ color: theme.primary }}>✦</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    if (key === 'projects' && projects && projects.length > 0) {
+      return (
+        <section key="projects" className="creative-section">
+          <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
+            Selected Projects
+          </h2>
+          <div className="creative-projects-grid">
+            {projects.map((proj) => (
+              <div key={proj.id} className="creative-proj-card" style={{ backgroundColor: theme.bgSidebar, borderColor: theme.accent }}>
+                <div className="creative-proj-title">
+                  <strong>{proj.name}</strong>
+                  {proj.link && (
+                    <a href={proj.link} target="_blank" rel="noreferrer" style={{ color: theme.primary }}>
+                      <ExternalLink size={11} />
+                    </a>
+                  )}
+                </div>
+                {proj.technologies && <div className="creative-proj-tech" style={{ color: theme.primary }}>{proj.technologies}</div>}
+                {proj.highlights && (
+                  <ul className="bullet-list small-bullets">
+                    {proj.highlights.map((h, i) => (
+                      <li key={i}>
+                        <span className="bullet-point" style={{ color: theme.secondary }}>•</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    // Custom sections
+    if (key.startsWith('custom-')) {
+      const customSec = customSections.find(c => c.id === key);
+      if (!customSec || !customSec.items || customSec.items.length === 0) return null;
+
+      return (
+        <section key={customSec.id} className="creative-section">
+          <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
+            {customSec.title || "Additional Section"}
+          </h2>
+          <div className="creative-entries">
+            {customSec.items.map((item) => (
+              <div key={item.id} className="creative-entry">
+                <div className="creative-entry-head">
+                  <div>
+                    <h3 className="creative-exp-role">{item.title}</h3>
+                    {item.subtitle && (
+                      <div className="creative-exp-company" style={{ color: theme.secondary }}>
+                        {item.subtitle}
+                      </div>
+                    )}
+                  </div>
+                  {item.date && (
+                    <span className="creative-badge" style={{ backgroundColor: theme.accent, color: theme.primary }}>
+                      {item.date}
+                    </span>
+                  )}
+                </div>
+                {item.description && <p className="creative-desc">{item.description}</p>}
+                {item.highlights && item.highlights.length > 0 && (
+                  <ul className="bullet-list">
+                    {item.highlights.filter(Boolean).map((h, i) => (
+                      <li key={i}>
+                        <span className="bullet-point" style={{ color: theme.primary }}>✦</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    return null;
+  };
+
+  const leftKeys = sectionOrder.filter(k => ['summary', 'experience', 'projects'].includes(k) || k.startsWith('custom-'));
 
   return (
     <div 
@@ -40,88 +192,15 @@ export default function CreativeAccent({ data, theme, font, spacing }) {
       <div className="creative-body-grid">
         {/* Left Column (65%) */}
         <div className="creative-left">
-          {summary && (
-            <section className="creative-section">
-              <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
-                About Me
-              </h2>
-              <p className="summary-text">{summary}</p>
-            </section>
-          )}
-
-          {experience && experience.length > 0 && (
-            <section className="creative-section">
-              <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
-                Work History
-              </h2>
-              <div className="creative-entries">
-                {experience.map((exp) => (
-                  <div key={exp.id} className="creative-entry">
-                    <div className="creative-entry-head">
-                      <div>
-                        <h3 className="creative-exp-role">{exp.role}</h3>
-                        <div className="creative-exp-company" style={{ color: theme.secondary }}>
-                          {exp.company} {exp.location && `• ${exp.location}`}
-                        </div>
-                      </div>
-                      <span className="creative-badge" style={{ backgroundColor: theme.accent, color: theme.primary }}>
-                        {exp.startDate} – {exp.current ? "Present" : exp.endDate}
-                      </span>
-                    </div>
-                    {exp.description && <p className="creative-desc">{exp.description}</p>}
-                    {exp.highlights && (
-                      <ul className="bullet-list">
-                        {exp.highlights.map((h, i) => (
-                          <li key={i}>
-                            <span className="bullet-point" style={{ color: theme.primary }}>✦</span>
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {projects && projects.length > 0 && (
-            <section className="creative-section">
-              <h2 className="creative-title" style={{ color: theme.primary, borderLeftColor: theme.secondary }}>
-                Selected Projects
-              </h2>
-              <div className="creative-projects-grid">
-                {projects.map((proj) => (
-                  <div key={proj.id} className="creative-proj-card" style={{ backgroundColor: theme.bgSidebar, borderColor: theme.accent }}>
-                    <div className="creative-proj-title">
-                      <strong>{proj.name}</strong>
-                      {proj.link && (
-                        <a href={proj.link} target="_blank" rel="noreferrer" style={{ color: theme.primary }}>
-                          <ExternalLink size={11} />
-                        </a>
-                      )}
-                    </div>
-                    {proj.technologies && <div className="creative-proj-tech" style={{ color: theme.primary }}>{proj.technologies}</div>}
-                    {proj.highlights && (
-                      <ul className="bullet-list small-bullets">
-                        {proj.highlights.map((h, i) => (
-                          <li key={i}>
-                            <span className="bullet-point" style={{ color: theme.secondary }}>•</span>
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {leftKeys.map(k => renderLeftSection(k))}
+          {customSections
+            .filter(c => !leftKeys.includes(c.id) && isVisible(c.id))
+            .map(c => renderLeftSection(c.id))}
         </div>
 
         {/* Right Column (35%) */}
         <div className="creative-right" style={{ backgroundColor: theme.bgSidebar, borderColor: theme.accent }}>
-          {skills && skills.length > 0 && (
+          {isVisible('skills') && skills && skills.length > 0 && (
             <section className="creative-side-block">
               <h3 className="creative-side-title" style={{ color: theme.primary }}>
                 Skills & Expertise
@@ -150,7 +229,7 @@ export default function CreativeAccent({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {education && education.length > 0 && (
+          {isVisible('education') && education && education.length > 0 && (
             <section className="creative-side-block">
               <h3 className="creative-side-title" style={{ color: theme.primary }}>
                 Education
@@ -167,7 +246,7 @@ export default function CreativeAccent({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {certifications && certifications.length > 0 && (
+          {isVisible('certifications') && certifications && certifications.length > 0 && (
             <section className="creative-side-block">
               <h3 className="creative-side-title" style={{ color: theme.primary }}>
                 Certifications
@@ -181,7 +260,7 @@ export default function CreativeAccent({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {languages && languages.length > 0 && (
+          {isVisible('languages') && languages && languages.length > 0 && (
             <section className="creative-side-block">
               <h3 className="creative-side-title" style={{ color: theme.primary }}>
                 Languages

@@ -1,9 +1,151 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Globe, ExternalLink, Code2, Terminal } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, ExternalLink, Code2, Terminal, Sparkles } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '../../Icons';
 
 export default function TechDuo({ data, theme, font, spacing }) {
-  const { personalInfo, summary, experience, education, skills, projects, certifications, languages } = data;
+  const { 
+    personalInfo = {}, 
+    summary = "", 
+    experience = [], 
+    education = [], 
+    skills = [], 
+    projects = [], 
+    certifications = [], 
+    languages = [],
+    customSections = [],
+    sectionOrder = ['summary', 'experience', 'projects', 'skills', 'education', 'certifications', 'languages'],
+    sectionSettings = {}
+  } = data || {};
+
+  const isVisible = (secKey) => sectionSettings[secKey]?.visible !== false;
+
+  const renderLeftSection = (key) => {
+    if (!isVisible(key)) return null;
+
+    if (key === 'experience' && experience && experience.length > 0) {
+      return (
+        <section key="experience" className="tech-block">
+          <h2 className="tech-block-title" style={{ color: theme.primary }}>
+            <Terminal size={14} className="inline-icon" /> Work Experience
+          </h2>
+          <div className="tech-timeline">
+            {experience.map((exp) => (
+              <div key={exp.id} className="tech-exp-card" style={{ borderLeftColor: theme.secondary }}>
+                <div className="tech-exp-header">
+                  <div>
+                    <h3 className="tech-role">{exp.role}</h3>
+                    <div className="tech-company" style={{ color: theme.primary }}>{exp.company}</div>
+                  </div>
+                  <span className="tech-dates" style={{ backgroundColor: theme.accent, color: theme.primary }}>
+                    {exp.startDate} – {exp.current ? "Present" : exp.endDate}
+                  </span>
+                </div>
+                {exp.description && <p className="tech-desc">{exp.description}</p>}
+                {exp.highlights && exp.highlights.length > 0 && (
+                  <ul className="bullet-list">
+                    {exp.highlights.map((h, i) => (
+                      <li key={i}>
+                        <span className="bullet-point" style={{ color: theme.secondary }}>▹</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    if (key === 'projects' && projects && projects.length > 0) {
+      return (
+        <section key="projects" className="tech-block">
+          <h2 className="tech-block-title" style={{ color: theme.primary }}>
+            <Code2 size={14} className="inline-icon" /> Featured Projects
+          </h2>
+          <div className="tech-projects-list">
+            {projects.map((proj) => (
+              <div key={proj.id} className="tech-proj-item" style={{ borderColor: theme.accent }}>
+                <div className="tech-proj-top">
+                  <strong className="tech-proj-name">{proj.name}</strong>
+                  {proj.link && (
+                    <a href={proj.link} target="_blank" rel="noreferrer" style={{ color: theme.primary }}>
+                      <ExternalLink size={12} />
+                    </a>
+                  )}
+                </div>
+                {proj.technologies && (
+                  <div className="tech-pill-row">
+                    {proj.technologies.split(',').map((t, tidx) => (
+                      <span key={tidx} className="tech-badge" style={{ backgroundColor: theme.accent, color: theme.primary }}>
+                        {t.trim()}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {proj.highlights && (
+                  <ul className="bullet-list small-bullets">
+                    {proj.highlights.map((h, hi) => (
+                      <li key={hi}>
+                        <span className="bullet-point" style={{ color: theme.secondary }}>-</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    if (key.startsWith('custom-')) {
+      const customSec = customSections.find(c => c.id === key);
+      if (!customSec || !customSec.items || customSec.items.length === 0) return null;
+
+      return (
+        <section key={customSec.id} className="tech-block">
+          <h2 className="tech-block-title" style={{ color: theme.primary }}>
+            <Sparkles size={14} className="inline-icon" /> {customSec.title || "Additional Section"}
+          </h2>
+          <div className="tech-timeline">
+            {customSec.items.map((item) => (
+              <div key={item.id} className="tech-exp-card" style={{ borderLeftColor: theme.secondary }}>
+                <div className="tech-exp-header">
+                  <div>
+                    <h3 className="tech-role">{item.title}</h3>
+                    {item.subtitle && <div className="tech-company" style={{ color: theme.primary }}>{item.subtitle}</div>}
+                  </div>
+                  {item.date && (
+                    <span className="tech-dates" style={{ backgroundColor: theme.accent, color: theme.primary }}>
+                      {item.date}
+                    </span>
+                  )}
+                </div>
+                {item.description && <p className="tech-desc">{item.description}</p>}
+                {item.highlights && item.highlights.length > 0 && (
+                  <ul className="bullet-list">
+                    {item.highlights.filter(Boolean).map((h, i) => (
+                      <li key={i}>
+                        <span className="bullet-point" style={{ color: theme.secondary }}>▹</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    return null;
+  };
+
+  const leftKeys = sectionOrder.filter(k => ['experience', 'projects'].includes(k) || k.startsWith('custom-'));
 
   return (
     <div 
@@ -36,7 +178,7 @@ export default function TechDuo({ data, theme, font, spacing }) {
                 {personalInfo.jobTitle || "Software Engineer"}
               </span>
             </div>
-            {summary && <p className="tech-summary-text">{summary}</p>}
+            {isVisible('summary') && summary && <p className="tech-summary-text">{summary}</p>}
           </div>
         </div>
 
@@ -78,85 +220,15 @@ export default function TechDuo({ data, theme, font, spacing }) {
       <div className="tech-duo-body">
         {/* Main Col: Experience & Projects */}
         <div className="tech-left-col">
-          {experience && experience.length > 0 && (
-            <section className="tech-block">
-              <h2 className="tech-block-title" style={{ color: theme.primary }}>
-                <Terminal size={14} className="inline-icon" /> Work Experience
-              </h2>
-              <div className="tech-timeline">
-                {experience.map((exp) => (
-                  <div key={exp.id} className="tech-exp-card" style={{ borderLeftColor: theme.secondary }}>
-                    <div className="tech-exp-header">
-                      <div>
-                        <h3 className="tech-role">{exp.role}</h3>
-                        <div className="tech-company" style={{ color: theme.primary }}>{exp.company}</div>
-                      </div>
-                      <span className="tech-dates" style={{ backgroundColor: theme.accent, color: theme.primary }}>
-                        {exp.startDate} – {exp.current ? "Present" : exp.endDate}
-                      </span>
-                    </div>
-                    {exp.description && <p className="tech-desc">{exp.description}</p>}
-                    {exp.highlights && exp.highlights.length > 0 && (
-                      <ul className="bullet-list">
-                        {exp.highlights.map((h, i) => (
-                          <li key={i}>
-                            <span className="bullet-point" style={{ color: theme.secondary }}>▹</span>
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {projects && projects.length > 0 && (
-            <section className="tech-block">
-              <h2 className="tech-block-title" style={{ color: theme.primary }}>
-                <Code2 size={14} className="inline-icon" /> Featured Projects
-              </h2>
-              <div className="tech-projects-list">
-                {projects.map((proj) => (
-                  <div key={proj.id} className="tech-proj-item" style={{ borderColor: theme.accent }}>
-                    <div className="tech-proj-top">
-                      <strong className="tech-proj-name">{proj.name}</strong>
-                      {proj.link && (
-                        <a href={proj.link} target="_blank" rel="noreferrer" style={{ color: theme.primary }}>
-                          <ExternalLink size={12} />
-                        </a>
-                      )}
-                    </div>
-                    {proj.technologies && (
-                      <div className="tech-pill-row">
-                        {proj.technologies.split(',').map((t, tidx) => (
-                          <span key={tidx} className="tech-badge" style={{ backgroundColor: theme.accent, color: theme.primary }}>
-                            {t.trim()}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {proj.highlights && (
-                      <ul className="bullet-list small-bullets">
-                        {proj.highlights.map((h, hi) => (
-                          <li key={hi}>
-                            <span className="bullet-point" style={{ color: theme.secondary }}>-</span>
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {leftKeys.map(k => renderLeftSection(k))}
+          {customSections
+            .filter(c => !leftKeys.includes(c.id) && isVisible(c.id))
+            .map(c => renderLeftSection(c.id))}
         </div>
 
         {/* Right Col: Skills & Education */}
         <div className="tech-right-col">
-          {skills && skills.length > 0 && (
+          {isVisible('skills') && skills && skills.length > 0 && (
             <section className="tech-block">
               <h2 className="tech-block-title" style={{ color: theme.primary }}>
                 Skills & Tech Stack
@@ -182,7 +254,7 @@ export default function TechDuo({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {education && education.length > 0 && (
+          {isVisible('education') && education && education.length > 0 && (
             <section className="tech-block">
               <h2 className="tech-block-title" style={{ color: theme.primary }}>
                 Education
@@ -199,7 +271,7 @@ export default function TechDuo({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {certifications && certifications.length > 0 && (
+          {isVisible('certifications') && certifications && certifications.length > 0 && (
             <section className="tech-block">
               <h2 className="tech-block-title" style={{ color: theme.primary }}>
                 Certifications
@@ -215,7 +287,7 @@ export default function TechDuo({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {languages && languages.length > 0 && (
+          {isVisible('languages') && languages && languages.length > 0 && (
             <section className="tech-block">
               <h2 className="tech-block-title" style={{ color: theme.primary }}>
                 Languages

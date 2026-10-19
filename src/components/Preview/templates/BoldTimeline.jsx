@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Globe, ExternalLink, Briefcase, GraduationCap, Award, FolderGit2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, ExternalLink, Briefcase, GraduationCap, Award, FolderGit2, Sparkles } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '../../Icons';
 
 const getTechList = (tech) => {
@@ -24,8 +24,183 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
     skills = [], 
     projects = [], 
     certifications = [], 
-    languages = [] 
+    languages = [],
+    customSections = [],
+    sectionOrder = ['summary', 'experience', 'projects', 'skills', 'education', 'certifications', 'languages'],
+    sectionSettings = {}
   } = data || {};
+
+  const isVisible = (secKey) => sectionSettings[secKey]?.visible !== false;
+
+  const renderMainItem = (key) => {
+    if (!isVisible(key)) return null;
+
+    if (key === 'experience' && experience && experience.length > 0) {
+      return (
+        <section key="experience" className="timeline-section">
+          <div className="timeline-sec-header">
+            <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
+              <Briefcase size={14} />
+            </span>
+            <h2 className="timeline-sec-title" style={{ color: theme?.primary }}>Work Experience</h2>
+          </div>
+
+          <div className="timeline-track-container">
+            <div className="timeline-track-line" style={{ backgroundColor: theme?.secondary }} />
+            <div className="timeline-entries">
+              {experience.map((exp) => (
+                <div key={exp.id} className="timeline-entry">
+                  <div className="timeline-node" style={{ borderColor: theme?.primary, backgroundColor: '#ffffff' }}>
+                    <span className="timeline-node-inner" style={{ backgroundColor: theme?.primary }} />
+                  </div>
+                  <div className="timeline-entry-content">
+                    <div className="timeline-entry-head">
+                      <div>
+                        <h3 className="timeline-entry-role">{exp.role}</h3>
+                        <div className="timeline-entry-company" style={{ color: theme?.secondary }}>
+                          {exp.company} {exp.location && <span>• {exp.location}</span>}
+                        </div>
+                      </div>
+                      <span className="timeline-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
+                        {exp.startDate} – {exp.current ? "Present" : exp.endDate}
+                      </span>
+                    </div>
+                    {exp.description && <p className="timeline-desc">{exp.description}</p>}
+                    {exp.highlights && exp.highlights.length > 0 && (
+                      <ul className="timeline-bullets">
+                        {exp.highlights.map((h, i) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    if (key === 'projects' && projects && projects.length > 0) {
+      return (
+        <section key="projects" className="timeline-section">
+          <div className="timeline-sec-header">
+            <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
+              <FolderGit2 size={14} />
+            </span>
+            <h2 className="timeline-sec-title" style={{ color: theme?.primary }}>Featured Projects</h2>
+          </div>
+
+          <div className="timeline-track-container">
+            <div className="timeline-track-line" style={{ backgroundColor: theme?.secondary }} />
+            <div className="timeline-entries">
+              {projects.map((proj) => {
+                const techList = getTechList(proj.technologies);
+                return (
+                  <div key={proj.id} className="timeline-entry">
+                    <div className="timeline-node" style={{ borderColor: theme?.primary, backgroundColor: '#ffffff' }}>
+                      <span className="timeline-node-inner" style={{ backgroundColor: theme?.primary }} />
+                    </div>
+                    <div className="timeline-entry-content">
+                      <div className="timeline-entry-head">
+                        <h3 className="timeline-entry-role">
+                          {proj.name || proj.title}
+                          {proj.link && (
+                            <a href={proj.link} target="_blank" rel="noreferrer" className="timeline-proj-link" style={{ color: theme?.secondary }}>
+                              <ExternalLink size={12} />
+                            </a>
+                          )}
+                        </h3>
+                      </div>
+                      {proj.role && <div className="timeline-entry-company" style={{ color: theme?.secondary }}>{proj.role}</div>}
+                      {proj.description && <p className="timeline-desc">{proj.description}</p>}
+                      {proj.highlights && proj.highlights.length > 0 && (
+                        <ul className="timeline-bullets">
+                          {proj.highlights.map((h, i) => (
+                            <li key={i}>{h}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {techList.length > 0 && (
+                        <div className="timeline-tags">
+                          {techList.map((t, i) => (
+                            <span key={i} className="timeline-tag" style={{ backgroundColor: theme?.bgSidebar, borderColor: theme?.accent }}>
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    if (key.startsWith('custom-')) {
+      const customSec = customSections.find(c => c.id === key);
+      if (!customSec || !customSec.items || customSec.items.length === 0) return null;
+
+      return (
+        <section key={customSec.id} className="timeline-section">
+          <div className="timeline-sec-header">
+            <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
+              <Sparkles size={14} />
+            </span>
+            <h2 className="timeline-sec-title" style={{ color: theme?.primary }}>
+              {customSec.title || "Additional Section"}
+            </h2>
+          </div>
+
+          <div className="timeline-track-container">
+            <div className="timeline-track-line" style={{ backgroundColor: theme?.secondary }} />
+            <div className="timeline-entries">
+              {customSec.items.map((item) => (
+                <div key={item.id} className="timeline-entry">
+                  <div className="timeline-node" style={{ borderColor: theme?.primary, backgroundColor: '#ffffff' }}>
+                    <span className="timeline-node-inner" style={{ backgroundColor: theme?.primary }} />
+                  </div>
+                  <div className="timeline-entry-content">
+                    <div className="timeline-entry-head">
+                      <div>
+                        <h3 className="timeline-entry-role">{item.title}</h3>
+                        {item.subtitle && (
+                          <div className="timeline-entry-company" style={{ color: theme?.secondary }}>
+                            {item.subtitle}
+                          </div>
+                        )}
+                      </div>
+                      {item.date && (
+                        <span className="timeline-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
+                          {item.date}
+                        </span>
+                      )}
+                    </div>
+                    {item.description && <p className="timeline-desc">{item.description}</p>}
+                    {item.highlights && item.highlights.length > 0 && (
+                      <ul className="timeline-bullets">
+                        {item.highlights.filter(Boolean).map((h, i) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    return null;
+  };
+
+  const mainKeys = sectionOrder.filter(k => ['experience', 'projects'].includes(k) || k.startsWith('custom-'));
 
   return (
     <div 
@@ -36,9 +211,10 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
         backgroundColor: '#ffffff'
       }}
     >
-      {/* Top Header Card */}
-      <header className="timeline-header" style={{ borderBottomColor: theme?.primary }}>
-        <div className="timeline-header-main">
+      {/* Top Hero Banner */}
+      <header className="timeline-hero">
+        <div className="timeline-hero-accent" style={{ backgroundColor: theme?.primary }} />
+        <div className="timeline-hero-content">
           {personalInfo.showAvatar && personalInfo.avatar && (
             <div className="timeline-avatar-wrap">
               <img 
@@ -56,7 +232,7 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
             <p className="timeline-role" style={{ color: theme?.secondary }}>
               {personalInfo.jobTitle || "Professional Title"}
             </p>
-            {summary && <p className="timeline-summary">{summary}</p>}
+            {isVisible('summary') && summary && <p className="timeline-summary">{summary}</p>}
           </div>
         </div>
 
@@ -99,112 +275,15 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
       <div className="timeline-body-grid">
         {/* Left Column: Experience & Projects with Connected Timeline */}
         <div className="timeline-main-col">
-          {experience && experience.length > 0 && (
-            <section className="timeline-section">
-              <div className="timeline-sec-header">
-                <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
-                  <Briefcase size={14} />
-                </span>
-                <h2 className="timeline-sec-title" style={{ color: theme?.primary }}>Work Experience</h2>
-              </div>
-
-              <div className="timeline-track-container">
-                <div className="timeline-track-line" style={{ backgroundColor: theme?.secondary }} />
-                <div className="timeline-entries">
-                  {experience.map((exp) => (
-                    <div key={exp.id} className="timeline-entry">
-                      <div className="timeline-node" style={{ borderColor: theme?.primary, backgroundColor: '#ffffff' }}>
-                        <span className="timeline-node-inner" style={{ backgroundColor: theme?.primary }} />
-                      </div>
-                      <div className="timeline-entry-content">
-                        <div className="timeline-entry-head">
-                          <div>
-                            <h3 className="timeline-entry-role">{exp.role}</h3>
-                            <div className="timeline-entry-company" style={{ color: theme?.secondary }}>
-                              {exp.company} {exp.location && <span>• {exp.location}</span>}
-                            </div>
-                          </div>
-                          <span className="timeline-entry-date" style={{ backgroundColor: theme?.accent, color: theme?.primary }}>
-                            {exp.startDate} – {exp.current ? "Present" : exp.endDate}
-                          </span>
-                        </div>
-                        {exp.description && <p className="timeline-desc">{exp.description}</p>}
-                        {exp.highlights && exp.highlights.length > 0 && (
-                          <ul className="timeline-bullets">
-                            {exp.highlights.map((h, i) => (
-                              <li key={i}>{h}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {projects && projects.length > 0 && (
-            <section className="timeline-section">
-              <div className="timeline-sec-header">
-                <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
-                  <FolderGit2 size={14} />
-                </span>
-                <h2 className="timeline-sec-title" style={{ color: theme?.primary }}>Featured Projects</h2>
-              </div>
-
-              <div className="timeline-track-container">
-                <div className="timeline-track-line" style={{ backgroundColor: theme?.secondary }} />
-                <div className="timeline-entries">
-                  {projects.map((proj) => {
-                    const techList = getTechList(proj.technologies);
-                    return (
-                      <div key={proj.id} className="timeline-entry">
-                        <div className="timeline-node" style={{ borderColor: theme?.primary, backgroundColor: '#ffffff' }}>
-                          <span className="timeline-node-inner" style={{ backgroundColor: theme?.primary }} />
-                        </div>
-                        <div className="timeline-entry-content">
-                          <div className="timeline-entry-head">
-                            <h3 className="timeline-entry-role">
-                              {proj.name || proj.title}
-                              {proj.link && (
-                                <a href={proj.link} target="_blank" rel="noreferrer" className="timeline-proj-link" style={{ color: theme?.secondary }}>
-                                  <ExternalLink size={12} />
-                                </a>
-                              )}
-                            </h3>
-                          </div>
-                          {proj.role && <div className="timeline-entry-company" style={{ color: theme?.secondary }}>{proj.role}</div>}
-                          {proj.description && <p className="timeline-desc">{proj.description}</p>}
-                          {proj.highlights && proj.highlights.length > 0 && (
-                            <ul className="timeline-bullets">
-                              {proj.highlights.map((h, i) => (
-                                <li key={i}>{h}</li>
-                              ))}
-                            </ul>
-                          )}
-                          {techList.length > 0 && (
-                            <div className="timeline-tags">
-                              {techList.map((t, i) => (
-                                <span key={i} className="timeline-tag" style={{ backgroundColor: theme?.bgSidebar, borderColor: theme?.accent }}>
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          )}
+          {mainKeys.map(k => renderMainItem(k))}
+          {customSections
+            .filter(c => !mainKeys.includes(c.id) && isVisible(c.id))
+            .map(c => renderMainItem(c.id))}
         </div>
 
         {/* Right Column: Education, Skills, Languages, Certifications */}
         <div className="timeline-side-col">
-          {education && education.length > 0 && (
+          {isVisible('education') && education && education.length > 0 && (
             <section className="timeline-side-sec">
               <div className="timeline-sec-header">
                 <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
@@ -232,7 +311,7 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {skills && skills.length > 0 && (
+          {isVisible('skills') && skills && skills.length > 0 && (
             <section className="timeline-side-sec">
               <div className="timeline-sec-header">
                 <span className="timeline-icon-box" style={{ backgroundColor: theme?.primary, color: '#ffffff' }}>
@@ -260,7 +339,7 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {certifications && certifications.length > 0 && (
+          {isVisible('certifications') && certifications && certifications.length > 0 && (
             <section className="timeline-side-sec">
               <h3 className="timeline-side-subhead" style={{ color: theme?.primary, borderBottomColor: theme?.accent }}>Certifications</h3>
               <div className="timeline-cert-list">
@@ -277,7 +356,7 @@ export default function BoldTimeline({ data, theme, font, spacing }) {
             </section>
           )}
 
-          {languages && languages.length > 0 && (
+          {isVisible('languages') && languages && languages.length > 0 && (
             <section className="timeline-side-sec">
               <h3 className="timeline-side-subhead" style={{ color: theme?.primary, borderBottomColor: theme?.accent }}>Languages</h3>
               <div className="timeline-lang-list">

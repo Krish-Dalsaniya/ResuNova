@@ -44,7 +44,7 @@ class TemplateErrorBoundary extends React.Component {
 }
 
 const ResumeCanvas = forwardRef(function ResumeCanvas(
-  { data, templateId, theme, font, spacing, zoom, setZoom },
+  { data, templateId, theme, font, spacing, fontSize = 'regular', headerStyle = 'underline', zoom, setZoom },
   ref
 ) {
   const [sheetHeight, setSheetHeight] = useState(1123);
@@ -75,7 +75,7 @@ const ResumeCanvas = forwardRef(function ResumeCanvas(
       clearTimeout(timer);
       observer.disconnect();
     };
-  }, [ref, data, templateId, spacing, font, autoPageBreak]);
+  }, [ref, data, templateId, spacing, font, theme, autoPageBreak, fontSize, headerStyle]);
 
   const renderTemplate = () => {
     const props = { data, theme, font, spacing };
@@ -182,7 +182,13 @@ const ResumeCanvas = forwardRef(function ResumeCanvas(
             <div 
               id="resume-to-print" 
               ref={ref} 
-              className="a4-resume-sheet"
+              className={`a4-resume-sheet font-scale-${fontSize} header-style-${headerStyle}`}
+              style={{
+                '--theme-primary': theme?.primary,
+                '--theme-secondary': theme?.secondary,
+                '--theme-accent': theme?.accent,
+                '--theme-text': theme?.text
+              }}
             >
               <TemplateErrorBoundary key={templateId}>
                 {renderTemplate()}
